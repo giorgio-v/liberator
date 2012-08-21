@@ -425,11 +425,14 @@
 
 (defn media-type-available? [context]
   (decide :media-type-available?
-          #(try-header "Accept"
-             (when-let [type (liberator.conneg/best-allowed-content-type 
-                              (get-in % [:request :headers "accept"] "*/*") 
-                              ((get-in context [:resource :available-media-types]) context))]
-               {:representation {:media-type (liberator.conneg/stringify type)}}))
+          (fn [context]
+            (let [f (or (get-in context [:resource :media-type-available?])
+                        #(try-header "Accept"
+                                     (when-let [type (liberator.conneg/best-allowed-content-type 
+                                                      (get-in % [:request :headers "accept"] "*/*") 
+                                                      ((get-in context [:resource :available-media-types]) context))]
+                                       {:representation {:media-type (liberator.conneg/stringify type)}})))]
+              (f context)))
 	  accept-language-exists?
 	  handle-not-acceptable
 	  context))
