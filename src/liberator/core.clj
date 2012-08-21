@@ -10,7 +10,8 @@
   (:require liberator.conneg)
   (:use
    [liberator.util :only [parse-http-date http-date]]
-   [liberator.representation :only [Representation as-response]])
+   [liberator.representation :only [Representation as-response]]
+   [clojure.tools.trace :only [trace]])
   (:import (javax.xml.ws ProtocolException)))
 
 (defprotocol DateCoercions
